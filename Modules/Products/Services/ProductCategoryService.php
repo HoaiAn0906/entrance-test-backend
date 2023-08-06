@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Modules\Products\Entities\ProductCategory;
 use Modules\Products\Repositories\ProductCategoryRepository;
+use PhpParser\Node\Stmt\TryCatch;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -65,6 +66,29 @@ class ProductCategoryService extends BaseService
             ])
             ->defaultSorts('-created_at')
             ->paginate($params['limit'] ?? config('repository.pagination.limit'));
+    }
+
+    public function updateProductcategory(array $attrs, $id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $productCategory = $this->productCategoryRepository->update($attrs, $id);
+
+            if(isset($attrs['parent_id']) && $attrs['parent_id'] != 'none') {
+                $node = ProductCategory::find($attrs['parent_id']);
+
+                $node->appendNode($productCategory);
+            }
+
+            DB::commit();
+
+            return $productCategory;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            throw $th;
+        }
     }
 
     public function deleteProductCategory($id)

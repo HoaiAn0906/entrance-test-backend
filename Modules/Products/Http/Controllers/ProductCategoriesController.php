@@ -73,11 +73,13 @@ class ProductCategoriesController extends Controller
      * Update the specified resource in storage.
      * @param Request $request
      * @param int $id
-     * @return Renderable
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $this->productCategoryService->updateProductCategory($request->all(), $id);
+
+        return responder()->success($data)->respond();
     }
 
     /**

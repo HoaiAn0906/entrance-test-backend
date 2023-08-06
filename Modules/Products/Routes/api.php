@@ -21,8 +21,8 @@ Route::group([
     Route::group([
         'prefix' => 'admin',
     ], function () {
-        Route::apiResource('products',ProductsController::class);
-
+        Route::apiResource('products',ProductsController::class)->except(['update']);
+        Route::post('products/{id}', [ProductsController::class, 'update']);
         Route::group([
             'prefix' => 'product-categories',
         ], function () {

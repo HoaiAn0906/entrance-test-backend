@@ -31,10 +31,12 @@ class ProductService extends BaseService
 
         if (empty($arrayProductCategories)) {
             return $this->productRepository
+                ->orderBy('created_at', 'desc')
                 ->paginate($params['limit'] ?? config('repository.pagination.limit'));
         } else {
             return $this->productRepository
                 ->whereIn('product_category_id', $arrayProductCategories)
+                ->orderBy('created_at', 'desc')
                 ->paginate($params['limit'] ?? config('repository.pagination.limit'));
         }
     }
@@ -54,6 +56,38 @@ class ProductService extends BaseService
                 'image' => $imagePath,
                 'product_category_id' => data_get($attrs, 'product_category_id'),
             ]);
+            DB::commit();
+
+            return $product;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            throw $th;
+        }
+    }
+
+    public function deleteProduct($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $product = $this->productRepository->delete($id);
+            DB::commit();
+
+            return $product;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            throw $th;
+        }
+    }
+
+    public function updateProduct(array $attrs, $id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $product = $this->productRepository->update($attrs, $id);
             DB::commit();
 
             return $product;

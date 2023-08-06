@@ -74,20 +74,25 @@ class ProductsController extends Controller
      * Update the specified resource in storage.
      * @param Request $request
      * @param int $id
-     * @return Renderable
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $data = $this->productService->updateProduct($request->all(), $id);
+
+        return responder()->success($data, ProductTransformer::class)->respond();
     }
 
     /**
      * Remove the specified resource from storage.
      * @param int $id
-     * @return Renderable
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-        //
+        $this->productService->deleteProduct($id);
+
+        return responder()->success()->respond();
     }
 }

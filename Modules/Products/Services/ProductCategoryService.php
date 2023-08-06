@@ -66,4 +66,11 @@ class ProductCategoryService extends BaseService
             ->defaultSorts('-created_at')
             ->paginate($params['limit'] ?? config('repository.pagination.limit'));
     }
+
+    public function deleteProductCategory($id)
+    {
+        $data = $this->productCategoryRepository->delete($id);
+
+        return $data;
+    }
 }

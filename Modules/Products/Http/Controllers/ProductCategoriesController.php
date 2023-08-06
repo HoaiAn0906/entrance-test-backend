@@ -83,11 +83,11 @@ class ProductCategoriesController extends Controller
     /**
      * Remove the specified resource from storage.
      * @param int $id
-     * @return Renderable
+     * @return int
      */
     public function destroy($id)
     {
-        //
+        return $this->productCategoryService->deleteProductCategory($id);
     }
 
     public function getProductCategoriesNoTree(Request $request)

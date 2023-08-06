@@ -25,6 +25,7 @@ class ProductTransformer extends TransformerAbstract
             'image_url' => $model->imageUrl,
             'amount' => $model->amount,
             'created_at' => $model->created_at,
+            'product_category_name' => $model->productCategory->name ?? '',
         ];
     }
 }

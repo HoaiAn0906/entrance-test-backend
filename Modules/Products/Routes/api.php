@@ -16,18 +16,14 @@ use Modules\Products\Http\Controllers\ProductsController;
 */
 
 Route::group([
-    'middleware' => 'auth:api',
+    'prefix' => 'admin',
 ], function () {
+    Route::apiResource('products',ProductsController::class)->except(['update']);
+    Route::post('products/{id}', [ProductsController::class, 'update']);
     Route::group([
-        'prefix' => 'admin',
+        'prefix' => 'product-categories',
     ], function () {
-        Route::apiResource('products',ProductsController::class)->except(['update']);
-        Route::post('products/{id}', [ProductsController::class, 'update']);
-        Route::group([
-            'prefix' => 'product-categories',
-        ], function () {
-            Route::get('no-tree', [ProductCategoriesController::class, 'getProductCategoriesNoTree']);
-        });
-        Route::apiResource('product-categories',ProductCategoriesController::class);
+        Route::get('no-tree', [ProductCategoriesController::class, 'getProductCategoriesNoTree']);
     });
+    Route::apiResource('product-categories',ProductCategoriesController::class);
 });
